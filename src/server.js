@@ -23,21 +23,21 @@ const app = express();
 app.use(helmet());
 app.set('trust proxy', 1);
 
-// ── Raw body capture for TextBee HMAC signature verification ──────────────────
-app.use((req, res, next) => {
-  const chunks = [];
-  req.on('data', (chunk) => chunks.push(chunk));
-  req.on('end', () => {
-    req.rawBody = Buffer.concat(chunks);
-    next();
-  });
-  req.on('error', next);
-});
-
-// ── Body parsers ──────────────────────────────────────────────────────────────
+// ── Body parsers & raw body capture for TextBee HMAC verification ─────────────
 const BODY_LIMIT = '64kb';
-app.use(express.json({ limit: BODY_LIMIT }));
-app.use(express.urlencoded({ extended: false, limit: BODY_LIMIT }));
+app.use(express.json({
+  limit: BODY_LIMIT,
+  verify: (req, _res, buf) => {
+    req.rawBody = buf;
+  },
+}));
+app.use(express.urlencoded({
+  extended: false,
+  limit: BODY_LIMIT,
+  verify: (req, _res, buf) => {
+    req.rawBody = buf;
+  },
+}));
 
 // ── Global IP rate limit ──────────────────────────────────────────────────────
 const ipHits = new Map();

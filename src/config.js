@@ -63,6 +63,8 @@ export const config = {
     deviceId: optional('TEXTBEE_DEVICE_ID', ''),
     webhookSecret: optional('TEXTBEE_WEBHOOK_SECRET', ''),
     baseUrl: optional('TEXTBEE_BASE_URL', 'https://api.textbee.dev/api/v1'),
+    // For dual-SIM phones: get this value from the TextBee app → Settings → SIM
+    simSubscriptionId: optional('TEXTBEE_SIM_SUBSCRIPTION_ID', ''),
   },
 
   // Africa's Talking

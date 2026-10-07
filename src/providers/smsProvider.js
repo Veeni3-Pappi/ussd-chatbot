@@ -36,8 +36,16 @@ class TextBeeProvider {
   async sendSms(to, text) {
     const body = { recipients: [to], message: text };
     if (this.deviceId) body.deviceId = this.deviceId;
+    // Use specific SIM on dual-SIM phones. Value comes from TextBee app → Settings → SIM.
+    if (config.textbee.simSubscriptionId) {
+      body.simSubscriptionId = parseInt(config.textbee.simSubscriptionId, 10);
+    }
 
-    const response = await fetch(`${this.baseUrl}/gateway/send-sms`, {
+    const url = this.deviceId
+      ? `${this.baseUrl}/gateway/devices/${this.deviceId}/send-sms`
+      : `${this.baseUrl}/gateway/send-sms`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,39 +62,44 @@ class TextBeeProvider {
       );
     }
 
-    const messageId = json.data?.smsBatchId ?? 'unknown';
+    const messageId = json.data?.smsBatchId ?? json.data?.id ?? json.data?._id ?? json.smsBatchId ?? json.id ?? 'unknown';
     logger.debug({ messageId, to }, 'TextBee SMS queued');
     return { messageId, cost: null };
   }
 
   /**
    * Parse an inbound MESSAGE_RECEIVED webhook payload from TextBee.
+   * Handles both top-level and nested `data` formats.
    * @param {object} body - parsed JSON body
    * @returns {{ from: string, text: string, messageId: string }}
    */
   parseInbound(body) {
+    const data = body?.data ?? body ?? {};
     return {
-      from: body.sender ?? '',
-      text: body.message ?? '',
-      messageId: body.idempotencyKey ?? body.smsId ?? '',
+      from: data.sender ?? data.from ?? body?.sender ?? body?.from ?? '',
+      text: data.message ?? data.text ?? body?.message ?? body?.text ?? '',
+      messageId: data.idempotencyKey ?? data.smsId ?? data.id ?? body?.idempotencyKey ?? body?.smsId ?? body?.id ?? '',
     };
   }
 
   /**
    * Parse a delivery status webhook from TextBee.
+   * Handles both top-level and nested `data` formats.
    * @param {object} body
    * @returns {{ messageId: string, status: string, phone: string }}
    */
   parseDelivery(body) {
+    const data = body?.data ?? body ?? {};
+    const event = body?.webhookEvent ?? data?.webhookEvent;
     const eventToStatus = {
       MESSAGE_SENT: 'sent',
       MESSAGE_DELIVERED: 'delivered',
       MESSAGE_FAILED: 'failed',
     };
     return {
-      messageId: body.smsBatchId ?? body.smsId ?? '',
-      status: eventToStatus[body.webhookEvent] ?? body.webhookEvent?.toLowerCase() ?? 'unknown',
-      phone: body.recipient ?? body.sender ?? '',
+      messageId: data.smsBatchId ?? data.smsId ?? data.id ?? body?.smsBatchId ?? body?.smsId ?? body?.id ?? '',
+      status: eventToStatus[event] ?? event?.toLowerCase() ?? 'unknown',
+      phone: data.recipient ?? data.sender ?? data.phone ?? body?.recipient ?? body?.sender ?? body?.phone ?? '',
     };
   }
 
