@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+
 import { countSegments, sanitizeForGsm7, formatReply, isGsm7 } from '../src/services/replyFormatter.js';
 
 // ── countSegments ─────────────────────────────────────────────────────────────

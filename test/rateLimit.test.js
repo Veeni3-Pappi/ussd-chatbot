@@ -5,12 +5,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-process.env.DB_PATH = ':memory:';
-process.env.GEMINI_API_KEY = 'test-key';
-process.env.WEBHOOK_SECRET = 'test-secret-that-is-long-enough';
-process.env.RATE_LIMIT_PER_MIN = '3';
-process.env.RATE_LIMIT_PER_DAY = '5';
-
 import { checkRateLimit, clearRateLimit, rateLimitReply } from '../src/services/rateLimit.js';
 
 const PHONE = '+254700000002';
