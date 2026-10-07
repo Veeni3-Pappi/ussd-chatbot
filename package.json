@@ -1,0 +1,38 @@
+{
+  "name": "sms-ai",
+  "version": "1.0.0",
+  "description": "SMS-based AI assistant for feature-phone users in Kenya",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --experimental-vm-modules node_modules/vitest/vitest.mjs run",
+    "test:watch": "node --experimental-vm-modules node_modules/vitest/vitest.mjs",
+    "addCredits": "node scripts/addCredits.js",
+    "stats": "node scripts/stats.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.5.0",
+    "africastalking": "^0.6.4",
+    "better-sqlite3": "^11.10.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "node-cron": "^3.0.3",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.9"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true,
+    "esbuild@0.21.5": true,
+    "@google/genai@1.52.0": true,
+    "protobufjs@7.6.6": true
+  }
+}

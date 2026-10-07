@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER commit real secrets
+.env
+
+# SQLite database
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
