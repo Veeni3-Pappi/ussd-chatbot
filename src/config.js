@@ -77,7 +77,7 @@ export const config = {
   // Gemini
   gemini: {
     apiKey: required('GEMINI_API_KEY'),
-    model: optional('GEMINI_MODEL', 'gemini-2.5-flash'),
+    model: optional('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
     priceInPerM: parseFloat(optional('GEMINI_PRICE_IN_PER_M', '0.075')),
     priceOutPerM: parseFloat(optional('GEMINI_PRICE_OUT_PER_M', '0.30')),
   },

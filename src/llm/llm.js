@@ -41,9 +41,6 @@ function buildGenerationConfig() {
   return {
     temperature: 0.4,
     maxOutputTokens: 120,
-    // Disable thinking tokens to reduce latency and cost.
-    // The field name varies by model generation; this covers both forms.
-    thinkingConfig: { thinkingBudget: 0 },
   };
 }
 
